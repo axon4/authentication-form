@@ -1,4 +1,5 @@
 import { AsyncDatabase } from 'promised-sqlite3';
+import { v4 as UUID } from 'uuid';
 
 interface User {
 	ID: number;
@@ -23,11 +24,34 @@ class SQLiteUserRepository implements UserRepository {
 	};
 
 	async get(ID: number): Promise<User | undefined> {
-		return await this.dataBase.get('SELECT * FROM users WHERE "ID" = ?', ID);
+		return await this.dataBase.get('SELECT * FROM users WHERE "ID" = ?;', ID);
 	};
 
 	async find(eMail: string): Promise<User | undefined> {
-		return await this.dataBase.get('SELECT * FROM users WHERE "eMail" = ?', eMail);
+		return await this.dataBase.get('SELECT * FROM users WHERE "eMail" = ?;', eMail);
+	};
+};
+
+class SQLiteSession {
+	constructor(private readonly dataBase: AsyncDatabase) {};
+
+	async create(userID: number): Promise<string> {
+		const sessionID = UUID();
+
+		this.dataBase.run('INSERT INTO sessions ("sessionID", "userID") values (?, ?);', [sessionID, userID]);
+
+		return sessionID;
+	};
+
+	async get(ID: number): Promise<User | undefined> {
+		const userID: {userID: number} | undefined = await this.dataBase.get('SELECT "userID" FROM sessions WHERE "sessionID" = ?;', ID);
+
+		if (userID === undefined) return undefined;
+		else {
+			const users = new SQLiteUserRepository(this.dataBase);
+
+			return await users.get(userID.userID);
+		};
 	};
 };
 

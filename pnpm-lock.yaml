@@ -28,6 +28,9 @@ devDependencies:
     '@types/sqlite3':
         specifier: ^3.1.11
         version: 3.1.11
+    '@types/uuid':
+        specifier: ^9.0.7
+        version: 9.0.7
     nodemon:
         specifier: ^2.0.22
         version: 2.0.22
@@ -147,6 +150,10 @@ packages:
         resolution: {integrity: sha512-KYF+QgxAnnAh7DWPdNDroxkDI3/MspH1NMx6m/N/6fT1G6+jvsw4/ZePt8R8cr7ta58aboeTfYFBDxTJ5yv15w==}
         dependencies:
             '@types/node': 20.10.4
+        dev: true
+
+    /@types/uuid@9.0.7:
+        resolution: {integrity: sha512-WUtIVRUZ9i5dYXefDEAI7sh9/O7jGvHg7Df/5O/gtH3Yabe5odI3UWopVR1qbPXQtvOxWu3mM4XxlYeZtMWF4g==}
         dev: true
 
     /abbrev@1.1.1:
