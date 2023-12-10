@@ -1,0 +1,46 @@
+{% extends 'index.njk' %}
+
+{% block title %}Register{% endblock %}
+{% block content %}
+	<div class='flex flex-row justify-center w-full mt-5'>
+		<div class='bg-base-300 flex flex-col w-80 p-6 rounded-md'>
+			<div class='mb-8 text-center'>
+				<h1 class='my-3 text-4xl font-bold'>Register</h1>
+				<p class='text-sm '>User-Authentication</p>
+			</div>
+			<form method='POST' action='/account/register' class='space-y-8'>
+				{% include 'serverMessage.njk' %}
+				<div class='space-y-4'>
+					<div class='form-control w-full max-w-xs'>
+						<label for='email' class='label'>
+							<span class='label-text'>EMail</span>
+						</label>
+						<input type='email' name='eMail' placeholder='eMail' required id='eMail' class='input input-bordered w-full max-w-xs text-primary-content' />
+						<p id='inValid-eMail' class='hidden text-sm bg-error text-base-300 mt-2 p-2 rounded'>inValid eMail</p>
+					</div>
+					<div class='form-control w-full max-w-xs'>
+						<label for='email' class='label'>
+							<span class='label-text'>PassWord</span>
+							<span class='label-text-alt'>
+								<a href='#' class='link-primary'>ForGot PassWord?</a>
+							</span>
+						</label>
+						<input type='password' name='passWord' placeholder='passWord' required id='password' class='input input-bordered w-full max-w-xs text-primary-content' />
+						<p id='inValid-passWord' class='hidden text-sm bg-error text-base-300 mt-2 p-2 rounded'>inValid passWord</p>
+					</div>
+					<div class='form-control'>
+						<label class='label cursor-pointer'>
+							<span class='label-text'>Agree to <a href='#' rel='noopener noreferrer' class='hover:underline link-primary'>Terms and Conditions</a></span>
+							<input type='checkbox' name='termsAndConditions' checked='false' id='terms-and-conditions' class='checkbox checkbox-primary' />
+						</label>
+					</div>
+				</div>
+				<div class='flex flex-col items-center gap-5'>
+					<button type='submit' id='form-submit' class='btn-disabled btn btn-primary'>Register</button>
+					<p class='px-6 text-sm text-center '>Existing User? <a href='/log-in' rel='noopener noreferrer' class='hover:underline link-primary'>Log-In</a></p>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type='module' src='register.js'></script>
+{% endblock %}

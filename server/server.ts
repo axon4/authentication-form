@@ -26,7 +26,19 @@ server.register(cookie, {secret: cookieSecret});
 server.register(formBody);
 
 server.get('/', async (request, response) => {
-	await response.send('AF');
+	await response.redirect('/log-in');
+});
+
+server.get('/register', async (request, response) => {
+	const rendered = templates.render('register.njk', { environment });
+
+	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
+});
+
+server.get('/log-in', async (request, response) => {
+	const rendered = templates.render('logIn.njk', { environment });
+
+	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
 });
 
 (async function() {
