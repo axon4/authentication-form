@@ -55,11 +55,11 @@ class SQLiteSession {
 	};
 };
 
-async function connect(connectionString: string): Promise<AsyncDatabase> {
+export async function connect(connectionString: string): Promise<AsyncDatabase> {
 	return await AsyncDatabase.open(connectionString);
 };
 
-async function seed(dataBase: AsyncDatabase): Promise<void> {
+export async function seed(dataBase: AsyncDatabase): Promise<void> {
 	return dataBase.exec(`
 		CREATE TABLE IF NOT EXISTS users (
 			"ID": INTEGER PRIMARY KEY,
