@@ -33,7 +33,7 @@ export class SQLiteUserRepository implements UserRepository {
 	};
 };
 
-class SQLiteSession {
+export class SQLiteSessionRepository {
 	constructor(private readonly dataBase: AsyncDatabase) {};
 
 	async create(userID: number): Promise<string> {

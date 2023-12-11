@@ -1,12 +1,12 @@
 import path from 'path';
 import dotEnv from 'dotenv';
-import fastify from 'fastify';
+import fastify, { FastifyReply, FastifyRequest } from 'fastify';
 import staticFiles from '@fastify/static';
 import cookie from '@fastify/cookie';
 import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
-import { SQLiteUserRepository, connect, seed } from './dataBase';
+import { SQLiteSessionRepository, SQLiteUserRepository, connect, seed } from './dataBase';
 import { authenticate, hash } from './authentication';
 
 dotEnv.config();
@@ -26,6 +26,16 @@ const templates = new nunJucks.Environment(new nunJucks.FileSystemLoader(path.jo
 server.register(staticFiles, {root: path.join(__dirname, '../dist')});
 server.register(cookie, {secret: cookieSecret});
 server.register(formBody);
+
+const sessionCookieKey = 'SESSION_ID';
+
+function setSessionCookie(response: FastifyReply, sessionID: string) {
+	response.setCookie(sessionCookieKey, sessionID, {path: '/'});
+};
+
+function getSessionCookie(request: FastifyRequest) {
+	return request.cookies[sessionCookieKey];
+};
 
 server.get('/', async (request, response) => {
 	await response.redirect('/log-in');
@@ -67,8 +77,11 @@ server.post('/register', async (request, response) => {
 			hash: hashedPassWord,
 			termsAndConditions: true
 		};
-		await userRepository.create(newUser);
+		const user = await userRepository.create(newUser);
+		const session = new SQLiteSessionRepository(dataBase);
+		const sessionID = await session.create(user.ID);
 
+		setSessionCookie(response, sessionID);
 		await response.redirect('/home');
 	} catch (error) {
 		await response.redirect('/register');
@@ -107,8 +120,13 @@ server.post('/log-in', async (request, response) => {
 
 		const match = await authenticate(data.passWord, user!.hash);
 
-		if (match) await response.redirect('/home');
-		else await response.redirect('/log-in');
+		if (match) {
+			const session = new SQLiteSessionRepository(dataBase);
+			const sessionID = await session.create(user!.ID);
+
+			setSessionCookie(response, sessionID);
+			await response.redirect('/home');
+		} else await response.redirect('/log-in');
 	} catch (error) {
 		await response.redirect('/log-in');
 	};
