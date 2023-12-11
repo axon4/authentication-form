@@ -5,11 +5,12 @@ const eMailField = document.getElementById('eMail') as HTMLInputElement;
 const eMailErrorLabel = document.getElementById('eMail-error') as HTMLParagraphElement;
 const passWordField = document.getElementById('passWord') as HTMLInputElement;
 const passWordErrorLabel = document.getElementById('passWord-error') as HTMLParagraphElement;
+const termsAndConditionsField = document.getElementById('terms-and-conditions') as HTMLInputElement;
 const button = document.getElementById('submit') as HTMLButtonElement;
 const errors = new Errors();
 
 function upDateButtonAbility() {
-	button.classList[eMailField.value.length > 0 && passWordField.value.length > 0 && errors.isEmpty ? 'remove' : 'add']('btn-disabled');
+	button.classList[eMailField.value.length > 0 && passWordField.value.length > 0 && termsAndConditionsField.checked && errors.isEmpty ? 'remove' : 'add']('btn-disabled');
 };
 
 eMailField.addEventListener('input', () => {
@@ -34,3 +35,4 @@ passWordField.addEventListener('input', () => {
 
 	upDateButtonAbility();
 });
+termsAndConditionsField.addEventListener('change', upDateButtonAbility);
