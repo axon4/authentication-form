@@ -14,3 +14,7 @@ export async function hash(plain: string): Promise<Hash> {
 		});
 	});
 };
+
+export async function authenticate(plain: string, hash: Hash): Promise<boolean> {
+	return await bCrypt.compare(plain, hash.hash);
+};

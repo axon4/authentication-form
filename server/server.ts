@@ -7,7 +7,7 @@ import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
 import { SQLiteUserRepository, connect, seed } from './dataBase';
-import { hash } from './authentication';
+import { authenticate, hash } from './authentication';
 
 dotEnv.config();
 
@@ -27,6 +27,10 @@ server.register(staticFiles, {root: path.join(__dirname, '../dist')});
 server.register(cookie, {secret: cookieSecret});
 server.register(formBody);
 
+server.get('/', async (request, response) => {
+	await response.redirect('/log-in');
+});
+
 const registrationSchema = z.object({
 	eMail: z.string(),
 	passWord: z.string(),
@@ -34,10 +38,6 @@ const registrationSchema = z.object({
 });
 
 type Registration = z.infer<typeof registrationSchema>;
-
-server.get('/', async (request, response) => {
-	await response.redirect('/log-in');
-});
 
 server.get('/register', async (request, response) => {
 	const rendered = templates.render('register.njk', { environment });
@@ -67,7 +67,7 @@ server.post('/register', async (request, response) => {
 			hash: hashedPassWord,
 			termsAndConditions: true
 		};
-		const user = await userRepository.create(newUser);
+		await userRepository.create(newUser);
 
 		await response.redirect('/home');
 	} catch (error) {
@@ -75,10 +75,43 @@ server.post('/register', async (request, response) => {
 	};
 });
 
+const logInSchema = z.object({
+	eMail: z.string(),
+	passWord: z.string()
+});
+
+type LogIn = z.infer<typeof logInSchema>;
+
 server.get('/log-in', async (request, response) => {
 	const rendered = templates.render('logIn.njk', { environment });
 
 	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
+});
+
+server.post('/log-in', async (request, response) => {
+	let data!: LogIn;
+
+	try {
+		data = registrationSchema.parse(request.body);
+	} catch (error) {
+		await response.redirect('/log-in');
+	};
+
+	const dataBase = await connect(dataBaseConnectionString);
+	const userRepository = new SQLiteUserRepository(dataBase);
+
+	try {
+		const user = await userRepository.find(data.eMail);
+
+		if (!user) await response.redirect('/log-in');
+
+		const match = await authenticate(data.passWord, user!.hash);
+
+		if (match) await response.redirect('/home');
+		else await response.redirect('/log-in');
+	} catch (error) {
+		await response.redirect('/log-in');
+	};
 });
 
 (async function() {
