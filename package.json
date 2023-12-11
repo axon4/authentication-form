@@ -5,8 +5,9 @@
 		"node": ">=18.9.1"
 	},
 	"scripts": {
-		"start": "concurrently \"pnpm start:server\" \"pnpm start:tailWind\" \"pnpm start:reLoad\"",
+		"start": "concurrently \"pnpm start:server\" \"pnpm start:client\" \"pnpm start:tailWind\" \"pnpm start:reLoad\"",
 		"start:server": "nodemon -w ./ -e css,ts,njk --exec ts-node server/server.ts",
+		"start:client": "nodemon -w ./ -e ts --exec parcel build client/**/*.ts",
 		"start:tailWind": "tailwindcss -w -i server/templates/style.css -o dist/style.css",
 		"start:reLoad": "pnpm livereload -w 2500 -e html,css,ts,njk"
 	},
@@ -35,6 +36,7 @@
 		"dotenv": "^16.3.1",
 		"livereload": "^0.9.3",
 		"nodemon": "^2.0.22",
+		"parcel": "^2.8.3",
 		"tailwindcss": "^3.3.2",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.0.4",
