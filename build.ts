@@ -29,7 +29,7 @@ parcel.run()
 		for (const bundle of bundles.bundleGraph.getBundles()) {
 			const content = await outPutFileSystem.readFile(bundle.filePath, 'utf-8');
 			
-			await fs.writeFileSync(bundle.filePath, content);
+			if (bundle.type !== 'ico') fs.writeFileSync(bundle.filePath, content);
 		};
 	})
 	.catch(error => {
@@ -82,5 +82,6 @@ function copyFiles(pattern: string, destination: string): void {
 	});
 };
 
+copyFiles('./src/client/favicon.ico', './dist/');
 copyFiles('./src/server/dataBase.sqlite', './dist/server/');
 copyFiles('./src/server/templates/*.njk', './dist/server/templates/');
