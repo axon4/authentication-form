@@ -6,6 +6,7 @@ import cookie from '@fastify/cookie';
 import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
+import { clearFlashMessageCookie, flashMessageCookieKey } from './middleWare';
 import { SQLiteSessionRepository, SQLiteUserRepository, connect, seed } from './dataBase';
 import { authenticate, hash } from './authentication';
 
@@ -24,8 +25,17 @@ const dataBaseConnectionString = path.join(__dirname, 'dataBase.sqlite');
 const templates = new nunJucks.Environment(new nunJucks.FileSystemLoader(path.join(__dirname, 'templates')));
 
 server.register(staticFiles, {root: path.join(__dirname, '../dist')});
+server.register(clearFlashMessageCookie);
 server.register(cookie, {secret: cookieSecret});
 server.register(formBody);
+
+function setFlashMessageCookie(response: FastifyReply, message: string) {
+	response.setCookie(flashMessageCookieKey, message, {path: '/'});
+};
+
+function getFlashMessageCookie(request: FastifyRequest) {
+	return request.cookies[flashMessageCookieKey];
+};
 
 const sessionCookieKey = 'SESSION_ID';
 
@@ -61,10 +71,14 @@ server.post('/register', async (request, response) => {
 	try {
 		data = registrationSchema.parse(request.body);
 	} catch (error) {
+		setFlashMessageCookie(response, 'Error Registering');
 		await response.redirect('/register');
 	};
 
-	if (data.termsAndConditions !== 'on') await response.redirect('/register');
+	if (data.termsAndConditions !== 'on') {
+		setFlashMessageCookie(response, 'Terms & Conditions Must be Accepted');
+		await response.redirect('/register');
+	};
 
 	const dataBase = await connect(dataBaseConnectionString);
 	const userRepository = new SQLiteUserRepository(dataBase);
@@ -84,6 +98,7 @@ server.post('/register', async (request, response) => {
 		setSessionCookie(response, sessionID);
 		await response.redirect('/home');
 	} catch (error) {
+		setFlashMessageCookie(response, 'Error Getting New User');
 		await response.redirect('/register');
 	};
 });
@@ -107,6 +122,7 @@ server.post('/log-in', async (request, response) => {
 	try {
 		data = registrationSchema.parse(request.body);
 	} catch (error) {
+		setFlashMessageCookie(response, 'Error Logging-In');
 		await response.redirect('/log-in');
 	};
 
@@ -116,7 +132,10 @@ server.post('/log-in', async (request, response) => {
 	try {
 		const user = await userRepository.find(data.eMail);
 
-		if (!user) await response.redirect('/log-in');
+		if (!user) {
+			setFlashMessageCookie(response, 'User Not Found');
+			await response.redirect('/log-in');
+		};
 
 		const match = await authenticate(data.passWord, user!.hash);
 
@@ -126,8 +145,12 @@ server.post('/log-in', async (request, response) => {
 
 			setSessionCookie(response, sessionID);
 			await response.redirect('/home');
-		} else await response.redirect('/log-in');
+		} else {
+			setFlashMessageCookie(response, 'InCorrect PassWord')
+			await response.redirect('/log-in');
+		};
 	} catch (error) {
+		setFlashMessageCookie(response, 'Error Getting Existing User');
 		await response.redirect('/log-in');
 	};
 });
