@@ -47,7 +47,7 @@ function getSessionCookie(request: FastifyRequest) {
 	return request.cookies[sessionCookieKey];
 };
 
-server.get('/', async (request, response) => {
+server.get('/', async (_request, response) => {
 	await response.redirect('/log-in');
 });
 
@@ -59,7 +59,7 @@ const registrationSchema = z.object({
 
 type Registration = z.infer<typeof registrationSchema>;
 
-server.get('/register', async (request, response) => {
+server.get('/register', async (_request, response) => {
 	const rendered = templates.render('register.njk', { environment });
 
 	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
@@ -110,7 +110,7 @@ const logInSchema = z.object({
 
 type LogIn = z.infer<typeof logInSchema>;
 
-server.get('/log-in', async (request, response) => {
+server.get('/log-in', async (_request, response) => {
 	const rendered = templates.render('logIn.njk', { environment });
 
 	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
