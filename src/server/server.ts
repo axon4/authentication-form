@@ -8,6 +8,7 @@ import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
 import { clearFlashMessageCookie, flashMessageCookieKey } from './middleWare';
 import { SQLiteSessionRepository, SQLiteUserRepository, connect, seed } from './dataBase';
+import { validateEMail, validatePassWord } from '../validate';
 import { authenticate, hash } from './authentication';
 
 dotEnv.config();
@@ -81,6 +82,24 @@ server.post('/register', async (request, response) => {
 		await response.redirect('/register');
 	};
 
+	const eMailInValidations = validateEMail(data.eMail);
+
+	if (eMailInValidations.length > 0) {
+		const forMattedErrors = eMailInValidations.join('<br />');
+
+		setFlashMessageCookie(response, forMattedErrors);
+		await response.redirect('/register');
+	};
+
+	const passWordInValidations = validatePassWord(data.passWord);
+
+	if (passWordInValidations.length > 0) {
+		const forMattedErrors = passWordInValidations.join('<br />');
+
+		setFlashMessageCookie(response, forMattedErrors);
+		await response.redirect('/register');
+	};
+
 	const dataBase = await connect(dataBaseConnectionString);
 	const userRepository = new SQLiteUserRepository(dataBase);
 	const hashedPassWord = await hash(data.passWord);
@@ -125,6 +144,24 @@ server.post('/log-in', async (request, response) => {
 		data = registrationSchema.parse(request.body);
 	} catch (error) {
 		setFlashMessageCookie(response, 'Error Logging-In');
+		await response.redirect('/log-in');
+	};
+
+	const eMailInValidations = validateEMail(data.eMail);
+
+	if (eMailInValidations.length > 0) {
+		const forMattedErrors = eMailInValidations.join('<br />');
+
+		setFlashMessageCookie(response, forMattedErrors);
+		await response.redirect('/log-in');
+	};
+
+	const passWordInValidations = validatePassWord(data.passWord);
+
+	if (passWordInValidations.length > 0) {
+		const forMattedErrors = passWordInValidations.join('<br />');
+
+		setFlashMessageCookie(response, forMattedErrors);
 		await response.redirect('/log-in');
 	};
 
