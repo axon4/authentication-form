@@ -82,7 +82,5 @@ function copyFiles(pattern: string, destination: string): void {
 	});
 };
 
-copyFiles('./src/server/templates/*.njk', './dist/templates/');
-copyFiles('./dist/server/*', './dist/');
-
-fs.rmdirSync('./dist/server', {recursive: true});
+copyFiles('./src/server/dataBase.sqlite', './dist/server/');
+copyFiles('./src/server/templates/*.njk', './dist/server/templates/');
