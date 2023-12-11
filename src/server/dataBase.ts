@@ -2,7 +2,7 @@ import { AsyncDatabase } from 'promised-sqlite3';
 import { v4 as UUID } from 'uuid';
 import { Hash } from './authentication';
 
-interface User {
+export interface User {
 	ID: number;
 	eMail: string;
 	hash: Hash;

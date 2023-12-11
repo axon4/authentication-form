@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html data-theme='dark'>
+	<head>
+		{% include 'head.njk' %}
+		{% block header %}{% endblock %}
+		<title>
+			{% block title %}Authentication-Form{% endblock %}
+		</title>
+	</head>
+	<body>
+		{% block content %}{% endblock %}
+		{% include 'liveReLoad.njk' %}
+	</body>
+</html>

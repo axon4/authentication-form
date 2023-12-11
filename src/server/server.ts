@@ -7,7 +7,7 @@ import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
 import { clearFlashMessageCookie, flashMessageCookieKey } from './middleWare';
-import { SQLiteSessionRepository, SQLiteUserRepository, connect, seed } from './dataBase';
+import { SQLiteSessionRepository, SQLiteUserRepository, User, connect, seed } from './dataBase';
 import { validateEMail, validatePassWord } from '../validate';
 import { authenticate, hash } from './authentication';
 
@@ -111,7 +111,7 @@ server.post('/register', async (request, response) => {
 			hash: hashedPassWord,
 			termsAndConditions: true
 		};
-		const user = await userRepository.create(newUser);
+		const user = await userRepository.create(newUser as User);
 		const sessions = new SQLiteSessionRepository(dataBase);
 		const sessionID = await sessions.create(user.ID);
 

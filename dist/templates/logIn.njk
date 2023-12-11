@@ -1,0 +1,40 @@
+{% extends 'index.njk' %}
+
+{% block title %}Log-In | Authentication-Form{% endblock %}
+{% block content %}
+	<div class='flex flex-row justify-center w-full mt-5'>
+		<div class='bg-base-300 flex flex-col w-80 p-6 rounded-md'>
+			<div class='mb-8 text-center'>
+				<h1 class='my-3 text-4xl font-bold'>Log-In</h1>
+				<p class='text-sm '>Authentication-Form</p>
+			</div>
+			<form method='POST' action='/log-in' class='space-y-8'>
+				{% include 'serverMessage.njk' %}
+				<div class='space-y-4'>
+					<div class='form-control w-full max-w-xs'>
+						<label for='email' class='label'>
+							<span class='label-text'>EMail</span>
+						</label>
+						<input type='email' name='eMail' placeholder='eMail' required id='eMail' class='input input-bordered w-full max-w-xs text-primary-content' />
+						<p id='eMail-error' class='hidden text-sm bg-error text-base-300 mt-2 p-2 rounded'>inValid eMail</p>
+					</div>
+					<div class='form-control w-full max-w-xs'>
+						<label for='email' class='label'>
+							<span class='label-text'>PassWord</span>
+							<span class='label-text-alt'>
+								<a href='#' class='link-primary'>ForGot PassWord?</a>
+							</span>
+						</label>
+						<input type='password' name='passWord' placeholder='passWord' required id='passWord' class='input input-bordered w-full max-w-xs text-primary-content' />
+						<p id='passWord-error' class='hidden text-sm bg-error text-base-300 mt-2 p-2 rounded'>inValid passWord</p>
+					</div>
+				</div>
+				<div class='flex flex-col items-center gap-5'>
+					<button type='submit' id='submit' class='btn-disabled btn btn-primary'>Log-In</button>
+					<p class='px-6 text-sm text-center'>New User? <a href='/register' rel='noopener noreferrer' class='hover:underline link-primary'>Register</a></p>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script type='module' src='logIn.js'></script>
+{% endblock %}
