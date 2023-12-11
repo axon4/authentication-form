@@ -6,9 +6,9 @@
 	},
 	"scripts": {
 		"start": "concurrently \"pnpm start:server\" \"pnpm start:client\" \"pnpm start:tailWind\" \"pnpm start:reLoad\"",
-		"start:server": "nodemon -w ./ -e css,ts,njk --exec ts-node server/server.ts",
-		"start:client": "nodemon -w ./ -e ts --exec parcel build client/**/*.ts",
-		"start:tailWind": "tailwindcss -w -i server/templates/style.css -o dist/style.css",
+		"start:server": "nodemon -w ./ -e css,ts,njk --exec ts-node src/server/server.ts",
+		"start:client": "nodemon -w ./ -e ts --exec parcel build src/client/**/*.ts",
+		"start:tailWind": "tailwindcss -w -i src/server/templates/style.css -o dist/style.css",
 		"start:reLoad": "pnpm livereload -w 2500 -e html,css,ts,njk"
 	},
 	"dependencies": {

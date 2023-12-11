@@ -1,5 +1,5 @@
 import Errors from './errors';
-import { validateEMail, validatePassWord } from '../server/authentication';
+import { validateEMail, validatePassWord } from '../validate';
 
 const eMailField = document.getElementById('eMail') as HTMLInputElement;
 const eMailErrorLabel = document.getElementById('eMail-error') as HTMLParagraphElement;

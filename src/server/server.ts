@@ -24,7 +24,7 @@ const server = fastify({logger: true});
 const dataBaseConnectionString = path.join(__dirname, 'dataBase.sqlite');
 const templates = new nunJucks.Environment(new nunJucks.FileSystemLoader(path.join(__dirname, 'templates')));
 
-server.register(staticFiles, {root: path.join(__dirname, '../dist')});
+server.register(staticFiles, {root: path.join(__dirname, '../../dist')});
 server.register(clearFlashMessageCookie);
 server.register(cookie, {secret: cookieSecret});
 server.register(formBody);
