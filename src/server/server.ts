@@ -59,8 +59,9 @@ const registrationSchema = z.object({
 
 type Registration = z.infer<typeof registrationSchema>;
 
-server.get('/register', async (_request, response) => {
-	const rendered = templates.render('register.njk', { environment });
+server.get('/register', async (request, response) => {
+	const serverMessage = getFlashMessageCookie(request);
+	const rendered = templates.render('register.njk', { environment, serverMessage });
 
 	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
 });
@@ -110,8 +111,9 @@ const logInSchema = z.object({
 
 type LogIn = z.infer<typeof logInSchema>;
 
-server.get('/log-in', async (_request, response) => {
-	const rendered = templates.render('logIn.njk', { environment });
+server.get('/log-in', async (request, response) => {
+	const serverMessage = getFlashMessageCookie(request);
+	const rendered = templates.render('logIn.njk', { environment, serverMessage });
 
 	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
 });
