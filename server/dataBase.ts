@@ -33,7 +33,12 @@ export class SQLiteUserRepository implements UserRepository {
 	};
 };
 
-export class SQLiteSessionRepository {
+interface SessionRepository {
+	create(userID: number): Promise<string>;
+	get(ID: number): Promise<User | undefined>;
+};
+
+export class SQLiteSessionRepository implements SessionRepository {
 	constructor(private readonly dataBase: AsyncDatabase) {};
 
 	async create(userID: number): Promise<string> {
