@@ -7,6 +7,7 @@ import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
 import { SQLiteUserRepository, connect, seed } from './dataBase';
+import { hash } from './authentication';
 
 dotEnv.config();
 
@@ -57,12 +58,13 @@ server.post('/register', async (request, response) => {
 
 	const dataBase = await connect(dataBaseConnectionString);
 	const userRepository = new SQLiteUserRepository(dataBase);
+	const hashedPassWord = await hash(data.passWord);
 
 	try {
 		const newUser = {
 			...data,
 			ID: 7,
-			hash: 'hash',
+			hash: hashedPassWord,
 			termsAndConditions: true
 		};
 		const user = await userRepository.create(newUser);

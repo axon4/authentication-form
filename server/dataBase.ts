@@ -1,10 +1,11 @@
 import { AsyncDatabase } from 'promised-sqlite3';
 import { v4 as UUID } from 'uuid';
+import { Hash } from './authentication';
 
 interface User {
 	ID: number;
 	eMail: string;
-	hash: string;
+	hash: Hash;
 	termsAndConditions: boolean;
 };
 
@@ -18,7 +19,7 @@ export class SQLiteUserRepository implements UserRepository {
 	constructor(private readonly dataBase: AsyncDatabase) {};
 
 	async create(user: User): Promise<User> {
-		const { ID }: {ID: number} = await this.dataBase.get('INSERT INTO users ("eMail", hash, "termsAndConditions") VALUES (?, ?, ?) RETURNING "ID";', [user.eMail, user.hash, user.termsAndConditions]);
+		const { ID }: {ID: number} = await this.dataBase.get('INSERT INTO users ("eMail", hash, "termsAndConditions") VALUES (?, ?, ?) RETURNING "ID";', [user.eMail, user.hash.hash, user.termsAndConditions]);
 
 		return { ... user, ID };
 	};
