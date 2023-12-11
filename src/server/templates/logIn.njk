@@ -1,12 +1,12 @@
 {% extends 'index.njk' %}
 
-{% block title %}Log-In{% endblock %}
+{% block title %}Log-In | Authentication-Form{% endblock %}
 {% block content %}
 	<div class='flex flex-row justify-center w-full mt-5'>
 		<div class='bg-base-300 flex flex-col w-80 p-6 rounded-md'>
 			<div class='mb-8 text-center'>
 				<h1 class='my-3 text-4xl font-bold'>Log-In</h1>
-				<p class='text-sm '>User-Authentication</p>
+				<p class='text-sm '>Authentication-Form</p>
 			</div>
 			<form method='POST' action='/log-in' class='space-y-8'>
 				{% include 'serverMessage.njk' %}
