@@ -38,7 +38,7 @@ function getFlashMessageCookie(request: FastifyRequest) {
 	return request.cookies[flashMessageCookieKey];
 };
 
-const sessionCookieKey = 'SESSION_ID';
+const sessionCookieKey = 'sessionID';
 
 function setSessionCookie(response: FastifyReply, sessionID: string) {
 	response.setCookie(sessionCookieKey, sessionID, {path: '/'});
@@ -49,7 +49,7 @@ function getSessionCookie(request: FastifyRequest) {
 };
 
 server.get('/', async (_request, response) => {
-	await response.redirect('/log-in');
+	await response.redirect('/home');
 });
 
 const registrationSchema = z.object({
@@ -112,13 +112,13 @@ server.post('/register', async (request, response) => {
 			termsAndConditions: true
 		};
 		const user = await userRepository.create(newUser);
-		const session = new SQLiteSessionRepository(dataBase);
-		const sessionID = await session.create(user.ID);
+		const sessions = new SQLiteSessionRepository(dataBase);
+		const sessionID = await sessions.create(user.ID);
 
 		setSessionCookie(response, sessionID);
 		await response.redirect('/home');
 	} catch (error) {
-		setFlashMessageCookie(response, 'Error Getting New User');
+		setFlashMessageCookie(response, 'Error Posting New User');
 		await response.redirect('/register');
 	};
 });
@@ -192,6 +192,33 @@ server.post('/log-in', async (request, response) => {
 		setFlashMessageCookie(response, 'Error Getting Existing User');
 		await response.redirect('/log-in');
 	};
+});
+
+server.get('/home', async (request, response) => {
+	const sessionID = getSessionCookie(request);
+
+	if (!sessionID) {
+		setFlashMessageCookie(response, 'Logged-Out');
+
+		return await response.redirect('/log-in');
+	};
+
+	const dataBase = await connect(dataBaseConnectionString);
+	const sessions = new SQLiteSessionRepository(dataBase);
+	const user = await sessions.get(sessionID);
+
+	if (!user) {
+		setFlashMessageCookie(response, 'Session Expired');
+
+		return await response.redirect('/log-in');
+	};
+
+	const rendered = templates.render('home.njk', {
+		environment,
+		eMail: user.eMail
+	});
+
+	await response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered);
 });
 
 (async function() {

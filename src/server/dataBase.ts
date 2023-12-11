@@ -9,6 +9,10 @@ interface User {
 	termsAndConditions: boolean;
 };
 
+interface UserForDataBase extends Omit<User, 'hash'> {
+	hash: string;
+};
+
 interface UserRepository {
 	create(user: User): Promise<User>;
 	get(ID: number): Promise<User | undefined>;
@@ -25,17 +29,23 @@ export class SQLiteUserRepository implements UserRepository {
 	};
 
 	async get(ID: number): Promise<User | undefined> {
-		return await this.dataBase.get('SELECT * FROM users WHERE "ID" = ?;', ID);
+		const user: UserForDataBase | undefined = await this.dataBase.get('SELECT * FROM users WHERE "ID" = ?;', ID);
+
+		if (!user) return undefined;
+		else return {...user, hash: new Hash(user.hash)};
 	};
 
 	async find(eMail: string): Promise<User | undefined> {
-		return await this.dataBase.get('SELECT * FROM users WHERE "eMail" = ?;', eMail);
+		const ID: {ID: number} | undefined = await this.dataBase.get('SELECT "ID" FROM users WHERE "eMail" = ?;', eMail);
+
+		if (!ID) return undefined;
+		else return await this.get(ID.ID);
 	};
 };
 
 interface SessionRepository {
 	create(userID: number): Promise<string>;
-	get(ID: number): Promise<User | undefined>;
+	get(ID: string): Promise<User | undefined>;
 };
 
 export class SQLiteSessionRepository implements SessionRepository {
@@ -49,10 +59,10 @@ export class SQLiteSessionRepository implements SessionRepository {
 		return sessionID;
 	};
 
-	async get(ID: number): Promise<User | undefined> {
+	async get(ID: string): Promise<User | undefined> {
 		const userID: {userID: number} | undefined = await this.dataBase.get('SELECT "userID" FROM sessions WHERE "sessionID" = ?;', ID);
 
-		if (userID === undefined) return undefined;
+		if (!userID) return undefined;
 		else {
 			const users = new SQLiteUserRepository(this.dataBase);
 
