@@ -242,10 +242,9 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
                 eMailInValidations = (0, validate_1.validateEMail)(data.eMail);
                 if (!(eMailInValidations.length > 0)) return [3 /*break*/, 5];
                 forMattedErrors = eMailInValidations.join('<br />');
-                // setFlashMessageCookie(response, forMattedErrors);
+                setFlashMessageCookie(response, forMattedErrors);
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 4:
-                // setFlashMessageCookie(response, forMattedErrors);
                 _b.sent();
                 _b.label = 5;
             case 5:
@@ -253,10 +252,9 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
                 passWordInValidations = (0, validate_1.validatePassWord)(data.passWord);
                 if (!(passWordInValidations.length > 0)) return [3 /*break*/, 7];
                 forMattedErrors = passWordInValidations.join('<br />');
-                // setFlashMessageCookie(response, forMattedErrors);
+                setFlashMessageCookie(response, forMattedErrors);
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 6:
-                // setFlashMessageCookie(response, forMattedErrors);
                 _b.sent();
                 _b.label = 7;
             case 7:

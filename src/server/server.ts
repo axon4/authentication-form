@@ -152,7 +152,7 @@ server.post('/log-in', async (request, response) => {
 	if (eMailInValidations.length > 0) {
 		const forMattedErrors = eMailInValidations.join('<br />');
 
-		// setFlashMessageCookie(response, forMattedErrors);
+		setFlashMessageCookie(response, forMattedErrors);
 		await response.redirect('/log-in');
 	};
 
@@ -161,7 +161,7 @@ server.post('/log-in', async (request, response) => {
 	if (passWordInValidations.length > 0) {
 		const forMattedErrors = passWordInValidations.join('<br />');
 
-		// setFlashMessageCookie(response, forMattedErrors);
+		setFlashMessageCookie(response, forMattedErrors);
 		await response.redirect('/log-in');
 	};
 
