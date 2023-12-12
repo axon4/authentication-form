@@ -9,6 +9,8 @@ const termsAndConditionsField = document.getElementById('terms-and-conditions') 
 const button = document.getElementById('submit') as HTMLButtonElement;
 const errors = new Errors();
 
+termsAndConditionsField.checked = false;
+
 function upDateButtonAbility() {
 	button.classList[eMailField.value.length > 0 && passWordField.value.length > 0 && termsAndConditionsField.checked && errors.isEmpty ? 'remove' : 'add']('btn-disabled');
 };
