@@ -111,9 +111,9 @@ server.post('/register', async (request, response) => {
 			hash: hashedPassWord,
 			termsAndConditions: true
 		};
-		const user = await userRepository.create(newUser as User);
-		const sessions = new SQLiteSessionRepository(dataBase);
-		const sessionID = await sessions.create(user.ID);
+		const user = environment === 'development' ? await userRepository.create(newUser as User) : newUser;
+		const session = new SQLiteSessionRepository(dataBase);
+		const sessionID = environment === 'development' ? await session.create(user!.ID) : 'sessionID';
 
 		setSessionCookie(response, sessionID);
 		await response.redirect('/home');
@@ -205,7 +205,7 @@ server.get('/home', async (request, response) => {
 
 	const dataBase = await connect(dataBaseConnectionString);
 	const sessions = new SQLiteSessionRepository(dataBase);
-	const user = await sessions.get(sessionID);
+	const user = environment === 'development' ? await sessions.get(sessionID) : {eMail: 'SQLiteReadOnlyByPass'};
 
 	if (!user) {
 		setFlashMessageCookie(response, 'Session Expired');

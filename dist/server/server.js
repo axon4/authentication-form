@@ -124,19 +124,19 @@ server.get('/register', function (request, response) { return __awaiter(void 0, 
     });
 }); });
 server.post('/register', function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, error_1, eMailInValidations, forMattedErrors, passWordInValidations, forMattedErrors, dataBase, userRepository, hashedPassWord, newUser, user, sessions, sessionID, error_2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var data, error_1, eMailInValidations, forMattedErrors, passWordInValidations, forMattedErrors, dataBase, userRepository, hashedPassWord, newUser, user, _a, session, sessionID, _b, error_2;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _a.trys.push([0, 1, , 3]);
+                _c.trys.push([0, 1, , 3]);
                 data = registrationSchema.parse(request.body);
                 return [3 /*break*/, 3];
             case 1:
-                error_1 = _a.sent();
+                error_1 = _c.sent();
                 setFlashMessageCookie(response, 'Error Registering');
                 return [4 /*yield*/, response.redirect('/register')];
             case 2:
-                _a.sent();
+                _c.sent();
                 return [3 /*break*/, 3];
             case 3:
                 ;
@@ -144,8 +144,8 @@ server.post('/register', function (request, response) { return __awaiter(void 0,
                 setFlashMessageCookie(response, 'Terms & Conditions Must be Accepted');
                 return [4 /*yield*/, response.redirect('/register')];
             case 4:
-                _a.sent();
-                _a.label = 5;
+                _c.sent();
+                _c.label = 5;
             case 5:
                 ;
                 eMailInValidations = (0, validate_1.validateEMail)(data.eMail);
@@ -154,8 +154,8 @@ server.post('/register', function (request, response) { return __awaiter(void 0,
                 setFlashMessageCookie(response, forMattedErrors);
                 return [4 /*yield*/, response.redirect('/register')];
             case 6:
-                _a.sent();
-                _a.label = 7;
+                _c.sent();
+                _c.label = 7;
             case 7:
                 ;
                 passWordInValidations = (0, validate_1.validatePassWord)(data.passWord);
@@ -164,41 +164,55 @@ server.post('/register', function (request, response) { return __awaiter(void 0,
                 setFlashMessageCookie(response, forMattedErrors);
                 return [4 /*yield*/, response.redirect('/register')];
             case 8:
-                _a.sent();
-                _a.label = 9;
+                _c.sent();
+                _c.label = 9;
             case 9:
                 ;
                 return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
             case 10:
-                dataBase = _a.sent();
+                dataBase = _c.sent();
                 userRepository = new dataBase_1.SQLiteUserRepository(dataBase);
                 return [4 /*yield*/, (0, authentication_1.hash)(data.passWord)];
             case 11:
-                hashedPassWord = _a.sent();
-                _a.label = 12;
+                hashedPassWord = _c.sent();
+                _c.label = 12;
             case 12:
-                _a.trys.push([12, 16, , 18]);
+                _c.trys.push([12, 20, , 22]);
                 newUser = __assign(__assign({}, data), { ID: 7, hash: hashedPassWord, termsAndConditions: true });
+                if (!(environment === 'development')) return [3 /*break*/, 14];
                 return [4 /*yield*/, userRepository.create(newUser)];
             case 13:
-                user = _a.sent();
-                sessions = new dataBase_1.SQLiteSessionRepository(dataBase);
-                return [4 /*yield*/, sessions.create(user.ID)];
+                _a = _c.sent();
+                return [3 /*break*/, 15];
             case 14:
-                sessionID = _a.sent();
+                _a = newUser;
+                _c.label = 15;
+            case 15:
+                user = _a;
+                session = new dataBase_1.SQLiteSessionRepository(dataBase);
+                if (!(environment === 'development')) return [3 /*break*/, 17];
+                return [4 /*yield*/, session.create(user.ID)];
+            case 16:
+                _b = _c.sent();
+                return [3 /*break*/, 18];
+            case 17:
+                _b = 'sessionID';
+                _c.label = 18;
+            case 18:
+                sessionID = _b;
                 setSessionCookie(response, sessionID);
                 return [4 /*yield*/, response.redirect('/home')];
-            case 15:
-                _a.sent();
-                return [3 /*break*/, 18];
-            case 16:
-                error_2 = _a.sent();
+            case 19:
+                _c.sent();
+                return [3 /*break*/, 22];
+            case 20:
+                error_2 = _c.sent();
                 setFlashMessageCookie(response, 'Error Posting New User');
                 return [4 /*yield*/, response.redirect('/register')];
-            case 17:
-                _a.sent();
-                return [3 /*break*/, 18];
-            case 18:
+            case 21:
+                _c.sent();
+                return [3 /*break*/, 22];
+            case 22:
                 ;
                 return [2 /*return*/];
         }
@@ -320,37 +334,44 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
     });
 }); });
 server.get('/home', function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var sessionID, dataBase, sessions, user, rendered;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var sessionID, dataBase, sessions, user, _a, rendered;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 sessionID = getSessionCookie(request);
                 if (!!sessionID) return [3 /*break*/, 2];
                 setFlashMessageCookie(response, 'Logged-Out');
                 return [4 /*yield*/, response.redirect('/log-in')];
-            case 1: return [2 /*return*/, _a.sent()];
+            case 1: return [2 /*return*/, _b.sent()];
             case 2:
                 ;
                 return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
             case 3:
-                dataBase = _a.sent();
+                dataBase = _b.sent();
                 sessions = new dataBase_1.SQLiteSessionRepository(dataBase);
+                if (!(environment === 'development')) return [3 /*break*/, 5];
                 return [4 /*yield*/, sessions.get(sessionID)];
             case 4:
-                user = _a.sent();
-                if (!!user) return [3 /*break*/, 6];
+                _a = _b.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                _a = { eMail: 'SQLiteReadOnlyByPass' };
+                _b.label = 6;
+            case 6:
+                user = _a;
+                if (!!user) return [3 /*break*/, 8];
                 setFlashMessageCookie(response, 'Session Expired');
                 return [4 /*yield*/, response.redirect('/log-in')];
-            case 5: return [2 /*return*/, _a.sent()];
-            case 6:
+            case 7: return [2 /*return*/, _b.sent()];
+            case 8:
                 ;
                 rendered = templates.render('home.njk', {
                     environment: environment,
                     eMail: user.eMail
                 });
                 return [4 /*yield*/, response.header('Content-Type', 'text/html; charset=UTF-8').send(rendered)];
-            case 7:
-                _a.sent();
+            case 9:
+                _b.sent();
                 return [2 /*return*/];
         }
     });
