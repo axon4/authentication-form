@@ -223,19 +223,19 @@ server.get('/log-in', function (request, response) { return __awaiter(void 0, vo
     });
 }); });
 server.post('/log-in', function (request, response) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, error_3, eMailInValidations, forMattedErrors, passWordInValidations, forMattedErrors, dataBase, userRepository, user, match, session, sessionID, error_4;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var data, error_3, eMailInValidations, forMattedErrors, passWordInValidations, forMattedErrors, dataBase, userRepository, user, match, session, sessionID, _a, error_4;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 1, , 3]);
+                _b.trys.push([0, 1, , 3]);
                 data = registrationSchema.parse(request.body);
                 return [3 /*break*/, 3];
             case 1:
-                error_3 = _a.sent();
+                error_3 = _b.sent();
                 setFlashMessageCookie(response, 'Error Logging-In');
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 2:
-                _a.sent();
+                _b.sent();
                 return [3 /*break*/, 3];
             case 3:
                 ;
@@ -246,8 +246,8 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 4:
                 // setFlashMessageCookie(response, forMattedErrors);
-                _a.sent();
-                _a.label = 5;
+                _b.sent();
+                _b.label = 5;
             case 5:
                 ;
                 passWordInValidations = (0, validate_1.validatePassWord)(data.passWord);
@@ -257,58 +257,65 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 6:
                 // setFlashMessageCookie(response, forMattedErrors);
-                _a.sent();
-                _a.label = 7;
+                _b.sent();
+                _b.label = 7;
             case 7:
                 ;
                 return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
             case 8:
-                dataBase = _a.sent();
+                dataBase = _b.sent();
                 userRepository = new dataBase_1.SQLiteUserRepository(dataBase);
-                _a.label = 9;
+                _b.label = 9;
             case 9:
-                _a.trys.push([9, 19, , 21]);
+                _b.trys.push([9, 21, , 23]);
                 return [4 /*yield*/, userRepository.find(data.eMail)];
             case 10:
-                user = _a.sent();
+                user = _b.sent();
                 if (!!user) return [3 /*break*/, 12];
                 setFlashMessageCookie(response, 'User Not Found');
                 return [4 /*yield*/, response.redirect('/log-in')];
             case 11:
-                _a.sent();
-                _a.label = 12;
+                _b.sent();
+                _b.label = 12;
             case 12:
                 ;
                 return [4 /*yield*/, (0, authentication_1.authenticate)(data.passWord, user.hash)];
             case 13:
-                match = _a.sent();
-                if (!match) return [3 /*break*/, 16];
+                match = _b.sent();
+                if (!match) return [3 /*break*/, 18];
                 session = new dataBase_1.SQLiteSessionRepository(dataBase);
+                if (!(environment === 'development')) return [3 /*break*/, 15];
                 return [4 /*yield*/, session.create(user.ID)];
             case 14:
-                sessionID = _a.sent();
+                _a = _b.sent();
+                return [3 /*break*/, 16];
+            case 15:
+                _a = 'sessionID';
+                _b.label = 16;
+            case 16:
+                sessionID = _a;
                 setSessionCookie(response, sessionID);
                 return [4 /*yield*/, response.redirect('/home')];
-            case 15:
-                _a.sent();
-                return [3 /*break*/, 18];
-            case 16:
+            case 17:
+                _b.sent();
+                return [3 /*break*/, 20];
+            case 18:
                 setFlashMessageCookie(response, 'InCorrect PassWord');
                 return [4 /*yield*/, response.redirect('/log-in')];
-            case 17:
-                _a.sent();
-                _a.label = 18;
-            case 18:
-                ;
-                return [3 /*break*/, 21];
             case 19:
-                error_4 = _a.sent();
+                _b.sent();
+                _b.label = 20;
+            case 20:
+                ;
+                return [3 /*break*/, 23];
+            case 21:
+                error_4 = _b.sent();
                 setFlashMessageCookie(response, 'Error Getting Existing User');
                 return [4 /*yield*/, response.redirect('/log-in')];
-            case 20:
-                _a.sent();
-                return [3 /*break*/, 21];
-            case 21:
+            case 22:
+                _b.sent();
+                return [3 /*break*/, 23];
+            case 23:
                 ;
                 return [2 /*return*/];
         }

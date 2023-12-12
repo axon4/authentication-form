@@ -180,7 +180,7 @@ server.post('/log-in', async (request, response) => {
 
 		if (match) {
 			const session = new SQLiteSessionRepository(dataBase);
-			const sessionID = await session.create(user!.ID);
+			const sessionID = environment === 'development' ? await session.create(user!.ID) : 'sessionID';
 
 			setSessionCookie(response, sessionID);
 			await response.redirect('/home');
