@@ -52,7 +52,7 @@ export class SQLiteSessionRepository implements SessionRepository {
 	constructor(private readonly dataBase: AsyncDatabase) {};
 
 	async create(userID: number): Promise<string> {
-		const sessionID = UUID();
+		const sessionID = 'session' || UUID();
 
 		this.dataBase.run('INSERT INTO sessions ("sessionID", "userID") values (?, ?);', [sessionID, userID]);
 
@@ -71,10 +71,6 @@ export class SQLiteSessionRepository implements SessionRepository {
 	};
 };
 
-export async function connect(connectionString: string): Promise<AsyncDatabase> {
-	return await AsyncDatabase.open(connectionString);
-};
-
 export async function seed(dataBase: AsyncDatabase): Promise<void> {
 	return dataBase.exec(`
 		CREATE TABLE IF NOT EXISTS users (
@@ -91,3 +87,9 @@ export async function seed(dataBase: AsyncDatabase): Promise<void> {
 		);
 	`);
 };
+
+async function connect(connectionString: string): Promise<AsyncDatabase> {
+	return await AsyncDatabase.open(connectionString);
+};
+
+export default connect;

@@ -10,6 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -59,7 +82,7 @@ var formbody_1 = __importDefault(require("@fastify/formbody"));
 var zod_1 = require("zod");
 var nunjucks_1 = __importDefault(require("nunjucks"));
 var middleWare_1 = require("./middleWare");
-var dataBase_1 = require("./dataBase");
+var dataBase_1 = __importStar(require("./dataBase"));
 var validate_1 = require("../validate");
 var authentication_1 = require("./authentication");
 dotenv_1.default.config();
@@ -168,7 +191,7 @@ server.post('/register', function (request, response) { return __awaiter(void 0,
                 _c.label = 9;
             case 9:
                 ;
-                return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
+                return [4 /*yield*/, (0, dataBase_1.default)(dataBaseConnectionString)];
             case 10:
                 dataBase = _c.sent();
                 userRepository = new dataBase_1.SQLiteUserRepository(dataBase);
@@ -273,7 +296,7 @@ server.post('/log-in', function (request, response) { return __awaiter(void 0, v
                 _b.label = 7;
             case 7:
                 ;
-                return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
+                return [4 /*yield*/, (0, dataBase_1.default)(dataBaseConnectionString)];
             case 8:
                 dataBase = _b.sent();
                 userRepository = new dataBase_1.SQLiteUserRepository(dataBase);
@@ -345,7 +368,7 @@ server.get('/home', function (request, response) { return __awaiter(void 0, void
             case 1: return [2 /*return*/, _b.sent()];
             case 2:
                 ;
-                return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
+                return [4 /*yield*/, (0, dataBase_1.default)(dataBaseConnectionString)];
             case 3:
                 dataBase = _b.sent();
                 sessions = new dataBase_1.SQLiteSessionRepository(dataBase);
@@ -383,7 +406,7 @@ server.get('/home', function (request, response) { return __awaiter(void 0, void
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 4, , 5]);
-                    return [4 /*yield*/, (0, dataBase_1.connect)(dataBaseConnectionString)];
+                    return [4 /*yield*/, (0, dataBase_1.default)(dataBaseConnectionString)];
                 case 1:
                     dataBase = _a.sent();
                     return [4 /*yield*/, (0, dataBase_1.seed)(dataBase)];

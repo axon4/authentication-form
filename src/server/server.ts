@@ -7,7 +7,7 @@ import formBody from '@fastify/formbody';
 import { z } from 'zod';
 import nunJucks from 'nunjucks'; 
 import { clearFlashMessageCookie, flashMessageCookieKey } from './middleWare';
-import { SQLiteSessionRepository, SQLiteUserRepository, User, connect, seed } from './dataBase';
+import connect, { SQLiteSessionRepository, SQLiteUserRepository, User, seed } from './dataBase';
 import { validateEMail, validatePassWord } from '../validate';
 import { authenticate, hash } from './authentication';
 

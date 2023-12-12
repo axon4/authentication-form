@@ -47,7 +47,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.seed = exports.connect = exports.SQLiteSessionRepository = exports.SQLiteUserRepository = void 0;
+exports.seed = exports.SQLiteSessionRepository = exports.SQLiteUserRepository = void 0;
 var promised_sqlite3_1 = require("promised-sqlite3");
 var uuid_1 = require("uuid");
 var authentication_1 = require("./authentication");
@@ -122,7 +122,7 @@ var SQLiteSessionRepository = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var sessionID;
             return __generator(this, function (_a) {
-                sessionID = (0, uuid_1.v4)();
+                sessionID = 'session' || (0, uuid_1.v4)();
                 this.dataBase.run('INSERT INTO sessions ("sessionID", "userID") values (?, ?);', [sessionID, userID]);
                 return [2 /*return*/, sessionID];
             });
@@ -155,6 +155,15 @@ var SQLiteSessionRepository = /** @class */ (function () {
 }());
 exports.SQLiteSessionRepository = SQLiteSessionRepository;
 ;
+function seed(dataBase) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            return [2 /*return*/, dataBase.exec("\n\t\tCREATE TABLE IF NOT EXISTS users (\n\t\t\t\"ID\" INTEGER PRIMARY KEY,\n\t\t\t\"eMail\" TEXT UNIQUE NOT NULL,\n\t\t\thash TEXT NOT NULL,\n\t\t\t\"termsAndConditions\" BOOLEAN NOT NULL\n\t\t);\n\n\t\tCREATE TABLE IF NOT EXISTS sessions (\n\t\t\t\"sessionID\" UUID PRIMARY KEY,\n\t\t\t\"userID\" INTEGER NOT NULL,\n\t\t\tFOREIGN KEY (\"userID\") REFERENCES USERS(\"ID\") ON DELETE CASCADE\n\t\t);\n\t")];
+        });
+    });
+}
+exports.seed = seed;
+;
 function connect(connectionString) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -165,14 +174,5 @@ function connect(connectionString) {
         });
     });
 }
-exports.connect = connect;
 ;
-function seed(dataBase) {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/, dataBase.exec("\n\t\tCREATE TABLE IF NOT EXISTS users (\n\t\t\t\"ID\" INTEGER PRIMARY KEY,\n\t\t\t\"eMail\" TEXT UNIQUE NOT NULL,\n\t\t\thash TEXT NOT NULL,\n\t\t\t\"termsAndConditions\" BOOLEAN NOT NULL\n\t\t);\n\n\t\tCREATE TABLE IF NOT EXISTS sessions (\n\t\t\t\"sessionID\" UUID PRIMARY KEY,\n\t\t\t\"userID\" INTEGER NOT NULL,\n\t\t\tFOREIGN KEY (\"userID\") REFERENCES USERS(\"ID\") ON DELETE CASCADE\n\t\t);\n\t")];
-        });
-    });
-}
-exports.seed = seed;
-;
+exports.default = connect;
